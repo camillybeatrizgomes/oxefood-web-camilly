@@ -22,36 +22,43 @@ class MenuSistema extends React.Component{
                        as={Link}
                        to='/'
                    />
-                <Menu.Item
-                   name='cliente'
-                   active={this.state.activeItem === 'cliente'}
-                   onClick={this.handleItemClick}
-                   as={Link}
-                   to='/list-cliente'
+                   
+                    <Menu.Item
+                       name='cliente'
+                       active={this.state.activeItem === 'cliente'}
+                       onClick={this.handleItemClick}
+                       as={Link}
+                       to='/list-cliente'
+                   />
 
-               />
+                   <Menu.Item
+                       name='produto'
+                       active={this.state.activeItem === 'produto'}
+                       onClick={this.handleItemClick}
+                       as={Link}
+                       to='/list-produto'
+                   />
 
-               <Menu.Item
-                   name='produto'
-                   active={this.state.activeItem === 'produto'}
-                   onClick={this.handleItemClick}
-                   as={Link}
-                   to='/list-produto'
-               />
+                   <Menu.Item
+                       name='entregador'
+                       active={this.state.activeItem === 'entregador'}
+                       onClick={this.handleItemClick}
+                       as={Link}
+                       to='/list-entregador'
+                   />
 
-               <Menu.Item
-                   name='entregador'
-                   active={this.state.activeItem === 'entregador'}
-                   onClick={this.handleItemClick}
-                   as={Link}
-                   to='/list-entregador'
-               />
+                    <Menu.Item
+                       name='comprador'
+                       active={this.state.activeItem === 'comprador'}
+                       onClick={this.handleItemClick}
+                       as={Link}
+                       to='/list-comprador'
+                   />
 
-           </Menu>
-       </>
-   )
-}
+               </Menu>
+           </>
+       )
+   }
 }
 
 export default MenuSistema;
-

@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import { Button, Container, Divider, Icon, Table } from 'semantic-ui-react';
 import { ENDERECO_API } from '../../views/util/Constantes';
 
-class ListProduto extends React.Component{
+class ListComprador extends React.Component{
 
     state = {
 
-       listaProdutos: []
+       listaCompradores: []
       
     }
 
@@ -20,14 +20,28 @@ class ListProduto extends React.Component{
 
     carregarLista = () => {
 
-        axios.get(ENDERECO_API + "api/produto")
+        axios.get(ENDERECO_API + "api/comprador")
         .then((response) => {
           
             this.setState({
-                listaProdutos: response.data
+                listaCompradores: response.data
             })
         })
 
+    };
+
+    formatarData = (dataParam) => {
+
+        if (dataParam == null || dataParam == '') {
+            return ''
+        }
+        
+        let dia = dataParam.substr(8,2);
+        let mes = dataParam.substr(5,2);
+        let ano = dataParam.substr(0,4);
+        let dataFormatada = dia + '/' + mes + '/' + ano;
+
+        return dataFormatada
     };
 
     render(){
@@ -38,7 +52,7 @@ class ListProduto extends React.Component{
 
                     <Container textAlign='justified' >
 
-                        <h2> Produto </h2>
+                        <h2> Comprador </h2>
 
                         <Divider />
 
@@ -53,7 +67,7 @@ class ListProduto extends React.Component{
                                 floated='right'
                             >
                                 <Icon name='clipboard outline' />
-                                <Link to={'/form-produto'}>Novo</Link>
+                                <Link to={'/form-comprador'}>Novo</Link>
                             </Button>
 
                             <br/><br/><br/>
@@ -62,27 +76,34 @@ class ListProduto extends React.Component{
 
                                 <Table.Header>
                                     <Table.Row>
-                                        <Table.HeaderCell>Código</Table.HeaderCell>
-                                        <Table.HeaderCell>Título</Table.HeaderCell>
-                                        <Table.HeaderCell>Descrição</Table.HeaderCell>
-                                        <Table.HeaderCell>Valor Unitário</Table.HeaderCell>
-                                        <Table.HeaderCell>Tempo de Mínimo de Entrega</Table.HeaderCell>
-                                        <Table.HeaderCell>Tempo de Máximo de Entrega</Table.HeaderCell>
+                                        <Table.HeaderCell>Nome</Table.HeaderCell>
+                                        <Table.HeaderCell>Valor de Comissão</Table.HeaderCell>
+                                        <Table.HeaderCell>Contratado Em</Table.HeaderCell>
+                                        <Table.HeaderCell>QTD Compras no Mês</Table.HeaderCell>
+                                        <Table.HeaderCell>Endereço Residencial</Table.HeaderCell>
+                                        <Table.HeaderCell>Trabalha em Home Office?</Table.HeaderCell>
                                         <Table.HeaderCell textAlign='center' width={2}>Ações</Table.HeaderCell>
                                     </Table.Row>
                                 </Table.Header>
                           
                                 <Table.Body>
 
-                                    { this.state.listaProdutos.map(p => (
+                                    { this.state.listaCompradores.map(c => (
 
                                         <Table.Row>
-                                            <Table.Cell>{p.codigo}</Table.Cell>
-                                            <Table.Cell>{p.titulo}</Table.Cell>
-                                            <Table.Cell>{p.descricao}</Table.Cell>
-                                            <Table.Cell>{p.valorUnitario}</Table.Cell>
-                                            <Table.Cell>{p.tempoEntregaMinimo}</Table.Cell>
-                                            <Table.Cell>{p.tempoEntregaMaximo}</Table.Cell>
+                                            <Table.Cell>{c.nome}</Table.Cell>
+                                            <Table.Cell>{c.comissao}</Table.Cell>
+                                            <Table.Cell>{this.formatarData(c.contratadoEm)}</Table.Cell>
+                                            <Table.Cell>{c.qtdComprasMediasMes}</Table.Cell>
+                                            <Table.Cell>{c.enderecoResidencial}</Table.Cell>
+                                            <Table.Cell>
+                                                {c.trabahoHomeOffice === true &&
+                                                    <span> Sim </span>
+                                                }
+                                                {c.trabahoHomeOffice === false &&
+                                                    <span> Não </span>
+                                                }
+                                            </Table.Cell>
                                             <Table.Cell textAlign='center'>
                                               
                                                 <Button
@@ -113,4 +134,4 @@ class ListProduto extends React.Component{
    }
 }
 
-export default ListProduto;
+export default ListComprador;
