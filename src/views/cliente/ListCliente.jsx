@@ -120,6 +120,7 @@ class ListCliente extends React.Component{
                                         <Table.HeaderCell>Data de Nascimento</Table.HeaderCell>
                                         <Table.HeaderCell>Fone Celular</Table.HeaderCell>
                                         <Table.HeaderCell>Fone Fixo</Table.HeaderCell>
+                                        <Table.HeaderCell>Endereço</Table.HeaderCell>
                                         <Table.HeaderCell textAlign='center' width={2}>Ações</Table.HeaderCell>
                                     </Table.Row>
                                 </Table.Header>
@@ -134,6 +135,7 @@ class ListCliente extends React.Component{
                                             <Table.Cell>{this.formatarData(cliente.dataNascimento)}</Table.Cell>
                                             <Table.Cell>{cliente.foneCelular}</Table.Cell>
                                             <Table.Cell>{cliente.foneFixo}</Table.Cell>
+                                            <Table.Cell>{cliente.enderecoCliente}</Table.Cell>
                                             <Table.Cell textAlign='center'>
                                               
                                             <Button

@@ -15,6 +15,9 @@ export default function FormCliente () {
 	const [dataNascimento, setDataNascimento] = useState();
 	const [foneCelular, setFoneCelular] = useState();
 	const [foneFixo, setFoneFixo] = useState();
+	const [listaEnderecoCliente, setListaEnderecoCliente] = useState([]);
+   const [idEnderecoCliente, setIdEnderecoCliente] = useState();
+
 
 	useEffect(() => {
 
@@ -28,6 +31,7 @@ export default function FormCliente () {
 				setDataNascimento(formatarData(response.data.dataNascimento))
 				setFoneCelular(response.data.foneCelular)
 				setFoneFixo(response.data.foneFixo)
+				
 			})
 		}
 		
@@ -37,6 +41,7 @@ export default function FormCliente () {
 
 		let clienteRequest = {
 
+			idEnderecoCliente: idEnderecoCliente,
 			nome: nome,
 			cpf: cpf,
 			dataNascimento: dataNascimento,
@@ -112,6 +117,20 @@ export default function FormCliente () {
 										onChange={e => setCpf(e.target.value)}
 									/> 
 								</Form.Input>
+
+								<Form.Select
+									required
+									fluid
+									tabIndex='3'
+									placeholder='Selecione'
+									label='Endereço'
+									options={listaEnderecoCliente}
+									value={idEnderecoCliente}
+									onChange={(e,{value}) => {
+										setIdEnderecoCliente(value)
+									}}
+								/>
+
 
 							</Form.Group>
 							
