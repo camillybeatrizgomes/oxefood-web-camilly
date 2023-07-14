@@ -2,13 +2,13 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
-import { ENDERECO_API } from '../../views/util/Constantes';
+import MenuSistema from '../../MenuSistema';
 
 export default function FormEnderecoCliente () {
 
     const { state } = useLocation();
 
-    const [idEnderecoCliente, setIdEnderecoCliente] = useState();
+    const [idEndereco, setIdEndereco] = useState();
     const [rua, setRua] = useState();
     const [numero, setNumero] = useState();
     const [bairro, setBairro] = useState();
@@ -21,17 +21,17 @@ export default function FormEnderecoCliente () {
 
         if (state != null && state.id != null) {
 
-            axios.get(ENDERECO_API + "api/endereco/" + state.id)
+            axios.get("http://localhost:8082/api/enderecocliente/" + state.id)
             .then((response) => {
                 
-                setIdEnderecoCliente(response.data.idEnderecoCliente)
+                setIdEndereco(response.data.id)
                 setRua(response.data.rua)
-                setNumero(response.data.numero)
-                setBairro(response.data.bairro)
-                setCep(response.data.cep)
-                setCidade(response.data.cidade)
-                setEstado(response.data.estado)
-                setComplemento(response.data.complemento)
+                setNumero(response.data.numero);
+                setBairro(response.data.bairro);
+                setCep(response.data.cep);
+                setCidade(response.data.cidade);
+                setEstado(response.data.estado);
+                setComplemento(response.data.complemento);
             })
         }
         
@@ -39,7 +39,7 @@ export default function FormEnderecoCliente () {
 
     function salvar() {
 
-		let enderecoRequest = {
+		let enderecoRequeste = {
 
 			rua: rua,
             numero: numero,
@@ -47,20 +47,21 @@ export default function FormEnderecoCliente () {
             cep: cep,
             cidade: cidade,
             estado: estado,
-            complemento: complemento,
+            complemento: complemento
+
 		}
 
-        if (idEnderecoCliente != null) { //Alteração:
+        if (idEndereco != null) { //Alteração:
 
-            axios.put(ENDERECO_API + "api/endereco/" + idEnderecoCliente, enderecoRequest)
-		    .then((response) => { console.log('Endereço do cliente alterado com sucesso.') })
-		    .catch((error) => { console.log('Erro ao alter o endereço do cliente.') })
+            axios.put("http://localhost:8082/api/enderecocliente/" + idEndereco, enderecoRequeste)
+		    .then((response) => { console.log('Endereço de cliente alterado com sucesso.') })
+		    .catch((error) => { console.log('Erro ao alterar um endereço de cliente.') })
 
         } else { //Cadastro:
         
-            axios.post(ENDERECO_API + "api/endereco/", enderecoRequest)
-		    .then((response) => { console.log('Endereço do cliente cadastrado com sucesso.') })
-		    .catch((error) => { console.log('Erro ao incluir o endereço do cliente.') })
+            axios.post("http://localhost:8082/api/enderecocliente", enderecoRequeste)
+		    .then((response) => { console.log('Endereço de cliente cadastrado com sucesso.') })
+		    .catch((error) => { console.log('Erro ao incluir a endereço de cliente.') })
 
         }
 	}
@@ -68,16 +69,16 @@ export default function FormEnderecoCliente () {
     return (
 
         <div>
-
+            <MenuSistema/>
             <div style={{marginTop: '3%'}}>
 
                 <Container textAlign='justified' >
 
-                    { idEnderecoCliente === undefined &&
-                        <h2> <span style={{color: 'darkgray'}}> Endereço do Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro</h2>
+                    { idEndereco === undefined &&
+                        <h2> <span style={{color: 'darkgray'}}> Enderço de Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro</h2>
                     }
-                    { idEnderecoCliente !== undefined &&
-                        <h2> <span style={{color: 'darkgray'}}> Endereço do Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Alteração</h2>
+                    { idEndereco !== undefined &&
+                        <h2> <span style={{color: 'darkgray'}}> Endereço de Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Alteração</h2>
                     }
 
                     <Divider />
@@ -91,65 +92,59 @@ export default function FormEnderecoCliente () {
                                 fluid
                                 label='Rua'
                                 maxLength="200"
-                                value={rua}
+                                value={rua || ' '}
                                 onChange={e => setRua(e.target.value)}
                             />
-
 
                             <Form.Input
                                 required
                                 fluid
                                 label='Número'
                                 maxLength="200"
-                                value={numero}
+                                value={numero || ' '}
                                 onChange={e => setNumero(e.target.value)}
                             />
 
                             <Form.Input
-                                required
-                                fluid
-                                label='Bairro'
-                                maxLength="200"
-                                value={bairro}
-                                onChange={e => setBairro(e.target.value)}
-                            />
+                                    fluid
+                                    label='Bairro'
+                                    maxLength="200"
+                                    value={bairro}
+                                    onChange={e => setBairro(e.target.value)}
+                                />
+
 
                             <Form.Input
-                                required
-                                fluid
-                                label='CEP'
-                                maxLength="200"
-                                value={cep}
-                                onChange={e => setCep(e.target.value)}
-                            />
+                                    fluid
+                                    label='CEP'
+                                    maxLength="200"
+                                    value={cep}
+                                    onChange={e => setCep(e.target.value)}
+                                />
 
                             <Form.Input
-                                required
-                                fluid
-                                label='Cidade'
-                                maxLength="200"
-                                value={cidade}
-                                onChange={e => setCidade(e.target.value)}
-                            />
+                                    fluid
+                                    label='Cidade'
+                                    maxLength="200"
+                                    value={cidade}
+                                    onChange={e => setCidade(e.target.value)}
+                                />
 
                             <Form.Input
-                                required
-                                fluid
-                                label='Estado'
-                                maxLength="200"
-                                value={estado}
-                                onChange={e => setEstado(e.target.value)}
-                            />
+                                    fluid
+                                    label='Estado'
+                                    maxLength="200"
+                                    value={estado}
+                                    onChange={e => setEstado(e.target.value)}
+                                />
 
-                            <Form.Input
-                                required
-                                fluid
-                                label='Complemento'
-                                maxLength="200"
-                                value={complemento}
-                                onChange={e => setComplemento(e.target.value)}
-                            />
-
+                                <Form.Input
+                                    fluid
+                                    label='Complemento'
+                                    maxLength="200"
+                                    value={complemento}
+                                    onChange={e => setComplemento(e.target.value)}
+                                />
                         </Form>
 
                         <div style={{marginTop: '4%'}}>

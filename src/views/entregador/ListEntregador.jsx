@@ -2,6 +2,7 @@ import axios from 'axios';
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button, Container, Divider, Icon, List, Modal, Segment, Table } from 'semantic-ui-react';
+import MenuSistema from '../../MenuSistema';
 import { ENDERECO_API } from '../../views/util/Constantes';
 
 class ListEntregador extends React.Component{
@@ -69,7 +70,7 @@ class ListEntregador extends React.Component{
     render(){
         return(
             <div>
-
+                <MenuSistema/>
                 <div style={{marginTop: '3%'}}>
 
                     <Container textAlign='justified' >
@@ -111,7 +112,7 @@ class ListEntregador extends React.Component{
 
                                     { this.state.listaEntregadores.map(entregador => (
 
-                                        <Table.Row key={entregador.id}>
+                                        <Table.Row>
                                             <Table.Cell>{entregador.nome}</Table.Cell>
                                             <Table.Cell>{entregador.cpf}</Table.Cell>
                                             <Table.Cell>{this.formatarData(entregador.dataNascimento)}</Table.Cell>
@@ -129,15 +130,11 @@ class ListEntregador extends React.Component{
                                                 />  &nbsp;
                                               
                                                 <Button
-                                                    inverted
-                                                    circular
-                                                    color='green'
-                                                    title='Clique aqui para editar os dados deste cliente'
-                                                    icon>
-                                                        <Link to="/form-entregador" state={{id: entregador.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
-                                                </Button>
-                                                
-                                                &nbsp;
+                                                   inverted
+                                                   circular
+                                                   icon='edit'
+                                                   color='blue'
+                                                   itle='Clique aqui para editar os dados deste entregador' /> &nbsp;
                                                    
                                                 <Button
                                                    inverted

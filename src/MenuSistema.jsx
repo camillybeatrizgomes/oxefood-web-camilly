@@ -1,36 +1,42 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Dropdown, Menu } from "semantic-ui-react";
-
+import { isUserLoggedIn, logout } from './views/util/AuthenticationService';
 class MenuSistema extends React.Component{
 
-    state = {
-        activeItem: 'home'
-    }
+   state = {
+       activeItem: 'home'
+   }
+   
+   logout = () => {
+    logout()
+}
 
    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
-    render(){
-        return(
-            <>
-                <Menu inverted>
+   render(){
+       return(
+        <>
+           {isUserLoggedIn() &&
+            <Menu inverted>
+                <Menu.Item
+                    name='home'
+                    active={this.state.activeItem === 'home'}
+                    onClick={this.handleItemClick}
+                    as={Link}
+                    to='/home'
+                />
+           
+               <Menu inverted>
                   
-                    <Menu.Item
-                        name='home'
-                        active={this.state.activeItem === 'home'}
-                        onClick={this.handleItemClick}
-                        as={Link}
-                        to='/'
-                    />
-                  
-                    <Menu.Menu className='navbar__item--cliente'>
+                 <Menu.Menu className='navbar__item--pc'>
                         <Dropdown item text='Cliente'>
                             <Dropdown.Menu>
                                 <Dropdown.Item 
-                                    name='Endereço'
-                                    active={this.state.activeItem === 'enderecoCliente'}
+                                    name='endereco'
+                                    active={this.state.activeItem === 'endereco'}
                                     onClick={this.handleItemClick}
-                                    text='Endereço do Cliente' 
+                                    text='Endereço de cliente' 
                                     as={Link} 
                                     to='/list-endereco-cliente'
                                 />
@@ -69,26 +75,27 @@ class MenuSistema extends React.Component{
                         </Dropdown>
                     </Menu.Menu>
 
-                    <Menu.Item
-                        name='entregador'
-                        active={this.state.activeItem === 'entregador'}
-                        onClick={this.handleItemClick}
-                        as={Link}
-                        to='/list-entregador'
-                    />
+                   <Menu.Item
+                       name='entregador'
+                       active={this.state.activeItem === 'entregador'}
+                       onClick={this.handleItemClick}
+                       as={Link}
+                       to='/list-entregador'
+                   />
 
                     <Menu.Item
-                        name='comprador'
-                        active={this.state.activeItem === 'comprador'}
-                        onClick={this.handleItemClick}
+                        className='navbar__item--mobile'
+                        onClick={this.logout}
+                        content='Sair'
                         as={Link}
-                        to='/list-comprador'
+                        to='/'
                     />
 
-                </Menu>
-            </>
-        )
-    }
+               </Menu>
+            </Menu>
+           }
+       </>
+   )}
 }
 
 export default MenuSistema;

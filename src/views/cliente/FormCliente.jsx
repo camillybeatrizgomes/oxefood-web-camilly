@@ -3,45 +3,67 @@ import React, { useEffect, useState } from "react";
 import InputMask from 'react-input-mask';
 import { Link, useLocation } from "react-router-dom";
 import { Button, Container, Divider, Form, Icon } from 'semantic-ui-react';
-import { ENDERECO_API } from '../../views/util/Constantes';
+import MenuSistema from '../../MenuSistema';
+import { mensagemErro, notifyError, notifySuccess } from '../../views/util/Util';
 
-export default function FormCliente () {
+export default function FormCliente (){
 
-	const { state } = useLocation();
+			const { state } = useLocation();
+			const [idCliente, setIdCliente] = useState();
+			const [nome, setNome] = useState();
+			const [cpf, setCpf] = useState();
+			const [dataNascimento, setDataNascimento] = useState();
+			const [foneCelular, setFoneCelular] = useState();
+			const [foneFixo, setFoneFixo] = useState();
+			const [listaEndereco, setListaEndereco] = useState([]);
+  			const [idEndereco, setIdEndereco] = useState();
 
-	const [idCliente, setIdCliente] = useState();
-	const [nome, setNome] = useState();
-	const [cpf, setCpf] = useState();
-	const [dataNascimento, setDataNascimento] = useState();
-	const [foneCelular, setFoneCelular] = useState();
-	const [foneFixo, setFoneFixo] = useState();
-	const [listaEnderecoCliente, setListaEnderecoCliente] = useState([]);
-   const [idEnderecoCliente, setIdEnderecoCliente] = useState();
+	
 
+			useEffect(() => {
+				if (state != null && state.id != null) {
+					axios.get("http://localhost:8082/api/cliente/" + state.id)
+ 						.then((response) => {
+								   setIdCliente(response.data.id)
+								   setNome(response.data.nome)
+								   setCpf(response.data.cpf)
+								   setDataNascimento(response.data.dataNascimento)
+								   setFoneCelular(response.data.foneCelular)
+								   setFoneFixo(response.data.foneFixo)
+								   setIdEndereco(response.data.Endereco.id)
+					})
+				}
 
-	useEffect(() => {
+			{/* Para exibir todas as propriedades, é preciso criar objetos
+			 	separados para cada propriedade dentro do map.
+			 	estamos criando um objeto para cada endereço retornado pela API. 
+				O objeto possui duas propriedades: text e value.*/}
 
-		if (state != null && state.id != null) {
-			
-			axios.get(ENDERECO_API + "api/cliente/" + state.id)
-			.then((response) => {
-				setIdCliente(response.data.id)
-				setNome(response.data.nome)
-				setCpf(response.data.cpf)
-				setDataNascimento(formatarData(response.data.dataNascimento))
-				setFoneCelular(response.data.foneCelular)
-				setFoneFixo(response.data.foneFixo)
-				
-			})
-		}
-		
-	}, [state])
+				axios.get("http://localhost:8082/api/enderecocliente")
+       .then((response) => {
+           const dropDownEndereco = response.data.map(ed => ({
 
-	function salvar() {
+			text: `${ed.rua}, 
+			${ed.numero}, 
+			${ed.bairro}, 
+			${ed.cep}, 
+			${ed.cidade}, 
+			${ed.estado}, 
+			${ed.complemento}`,
+			value: ed.id
+
+			}));
+           setListaEndereco(dropDownEndereco);
+       })
+
+		}, [state])
+ 
+
+ 	function salvar ()  {
 
 		let clienteRequest = {
 
-			idEnderecoCliente: idEnderecoCliente,
+			idEndereco: idEndereco,
 			nome: nome,
 			cpf: cpf,
 			dataNascimento: dataNascimento,
@@ -50,73 +72,60 @@ export default function FormCliente () {
 		}
 
 		if (idCliente != null) { //Alteração:
-
-			axios.put(ENDERECO_API + "api/cliente/" + idCliente, clienteRequest)
-			.then((response) => { console.log('Cliente alterado com sucesso.') })
-			.catch((error) => { console.log('Erro ao alter um cliente.') })
-
+			axios.put("http://localhost:8082/api/cliente/" + idCliente, clienteRequest)
+			.then((response) => { notifySuccess('Cliente alteradp com sucesso.') })
+			.catch((error) => {if (error.response) {
+				notifyError(error.response.data.errors[0].defaultMessage)
+				} else {
+				notifyError(mensagemErro)
+				} 
+				 })
 		} else { //Cadastro:
-			
-			axios.post(ENDERECO_API + "api/cliente", clienteRequest)
+			axios.post("http://localhost:8082/api/cliente/", clienteRequest)
 			.then((response) => { console.log('Cliente cadastrado com sucesso.') })
-			.catch((error) => { console.log('Erro ao incluir o cliente.') })
+			.catch((error) => { {if (error.response) {
+				notifyError(error.response.data.errors[0].defaultMessage)
+				} else {
+				notifyError(mensagemErro)
+				} 
+				 } })
 		}
-	 }
-
-	function formatarData(dataParam) {
-
-        if (dataParam == null || dataParam == '') {
-            return ''
-        }
-        
-        let dia = dataParam.substr(8,2);
-        let mes = dataParam.substr(5,2);
-        let ano = dataParam.substr(0,4);
-        let dataFormatada = dia + '/' + mes + '/' + ano;
-
-        return dataFormatada
-    }
+ 
 	
-	return(
-		<div>
+	}
+   
+        return(
+            <div>
+				  <MenuSistema />
+                <div style={{marginTop: '3%'}}>
 
-			<div style={{marginTop: '3%'}}>
 
-				<Container textAlign='justified' >
+							<Container textAlign='justified' >
 
-					{ idCliente === undefined &&
-						<h2> <span style={{color: 'darkgray'}}> Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro</h2>
-					}
-					{ idCliente != undefined &&
-						<h2> <span style={{color: 'darkgray'}}> Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Alteração</h2>
-					}
+							{ idCliente === undefined &&
+								<h2> <span style={{color: 'darkgray'}}> Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro</h2>
+							}
+							{ idCliente != undefined &&
+								<h2> <span style={{color: 'darkgray'}}> Cliente &nbsp;<Icon name='angle double right' size="small" /> </span> Alteração</h2>
+							}
 
-					<Divider />
+							<Divider />
 
-					<div style={{marginTop: '4%'}}>
 
-						<Form>
+						<div style={{marginTop: '4%'}}>
 
-							<Form.Group widths='equal'>
+							<Form>
 
-								<Form.Input
-									required
-									fluid
-									label='Nome'
-									maxLength="100"
-									value={nome}
-									onChange={e => setNome(e.target.value)}
-								/>
+								<Form.Group widths='equal'>
 
-								<Form.Input
-									fluid
-									label='CPF'>
-									<InputMask 
-										mask="999.999.999-99"
-										value={cpf}
-										onChange={e => setCpf(e.target.value)}
-									/> 
-								</Form.Input>
+									<Form.Input
+										required
+										fluid
+										label='Nome'
+										maxLength="100"
+										value={nome}
+										onChange={e => setNome(e.target.value)}
+									/>
 
 								<Form.Select
 									required
@@ -124,94 +133,103 @@ export default function FormCliente () {
 									tabIndex='3'
 									placeholder='Selecione'
 									label='Endereço'
-									options={listaEnderecoCliente}
-									value={idEnderecoCliente}
+									options={listaEndereco}
+									value={idEndereco}
 									onChange={(e,{value}) => {
-										setIdEnderecoCliente(value)
+										setIdEndereco(value)
 									}}
 								/>
 
+									<Form.Input
+										fluid
+										label='CPF'>
+										<InputMask 
+										mask="999.999.999-99"
+										value={cpf}
+										onChange={e => setCpf(e.target.value)}/> 
+									</Form.Input>
 
-							</Form.Group>
-							
-							<Form.Group>
+								</Form.Group>
+								
+								<Form.Group>
 
-								<Form.Input
-									fluid
-									label='Fone Celular'
-									width={6}>
-									<InputMask 
+									<Form.Input
+										fluid
+										label='Fone Celular'
+                                        width={6}>
+										<InputMask 
 										mask="(99) 9999.9999" 
 										value={foneCelular}
-										onChange={e => setFoneCelular(e.target.value)}
-									/> 
-								</Form.Input>
+										onChange={e => setFoneCelular(e.target.value)}/>  
+									</Form.Input>
 
-								<Form.Input
-									fluid
-									label='Fone Fixo'
-									width={6}>
-									<InputMask 
+									<Form.Input
+										fluid
+										label='Fone Fixo'
+                                        width={6}>
+										<InputMask 
 										mask="(99) 9999.9999"
 										value={foneFixo}
-										onChange={e => setFoneFixo(e.target.value)}
-									/> 
-								</Form.Input>
+										onChange={e => setFoneFixo(e.target.value)}/> 
+									</Form.Input>
 
-								<Form.Input
-									fluid
-									label='Data Nascimento'
-									width={6}
-								>
-									<InputMask 
-										mask="99/99/9999" 
-										maskChar={null}
-										placeholder="Ex: 20/03/1985"
-										value={dataNascimento}
-										onChange={e => setDataNascimento(e.target.value)}
-									/> 
-								</Form.Input>
+                                    <Form.Input
+                                        fluid
+                                        label='Data Nascimento'
+                                        width={6}
+										
+                                    >
+                                        <InputMask 
+                                            mask="99/99/9999" 
+                                            maskChar={null}
+                                            placeholder="Ex: 20/03/1985"
+											value={dataNascimento}
+										onChange={e => setDataNascimento(e.target.value)}/> 
+                                        
+                                    </Form.Input>
 
-							</Form.Group>
+								</Form.Group>
 
-							<Form.Group widths='equal' style={{marginTop: '4%'}}  className='form--empresa-salvar'>
+								<Form.Group widths='equal' style={{marginTop: '4%'}}  className='form--empresa-salvar'>
 
-								<Button
-									type="button"
-									inverted
-									circular
-									icon
-									labelPosition='left'
-									color='orange'
-								>
-									<Icon name='reply' />
-									<Link to={'/list-cliente'}>Voltar</Link>
-								</Button>
-
-								<Container textAlign='right'>
-									
 									<Button
+										type="button"
 										inverted
 										circular
 										icon
 										labelPosition='left'
-										color='blue'
-										floated='right'
-										onClick={() => salvar()}
-									>
-										<Icon name='save' />
-										Salvar
-									</Button>
+										color='orange'
 									
-								</Container>
+										>
+										<Icon name='reply' />
+										<Link to={'/list-cliente'}>Voltar</Link>
+									</Button>
 
-							</Form.Group>
+									<Container textAlign='right'>
+										
+										<Button
+											inverted
+											circular
+											icon
+											labelPosition='left'
+											color='blue'
+											floated='right'
+											onClick={ () => salvar () }
+										>
+											<Icon name='save' />
+											Salvar
+										</Button>
+										
+									</Container>
 
-						</Form>
-					</div>
-				</Container>
+								</Form.Group>
+
+							</Form>
+						</div>
+                    </Container>
+                </div>
 			</div>
-		</div>
-	)
-	
-}
+		)
+	}
+
+

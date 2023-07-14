@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Container, Divider, Header, Icon, Modal, Table } from 'semantic-ui-react';
+import MenuSistema from '../../MenuSistema';
 import { ENDERECO_API } from '../../views/util/Constantes';
 
 export default function ListCategoriaProduto () {
@@ -52,7 +53,7 @@ export default function ListCategoriaProduto () {
 
     return(
         <div>
-
+            <MenuSistema/>
             <div style={{marginTop: '3%'}}>
 
                 <Container textAlign='justified' >

@@ -1,2 +1,2 @@
+export const  ENDERECO_API = 'http://localhost:8082/';
 
-export const ENDERECO_API = 'http://localhost:8082/';

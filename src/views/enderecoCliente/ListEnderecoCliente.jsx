@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Container, Divider, Header, Icon, Modal, Table } from 'semantic-ui-react';
-import { ENDERECO_API } from '../../views/util/Constantes';
+import MenuSistema from '../../MenuSistema';
 
 export default function ListEnderecoCliente () {
 
@@ -18,7 +18,7 @@ export default function ListEnderecoCliente () {
 
     function carregarLista () {
 
-        axios.get(ENDERECO_API + "api/endereco")
+        axios.get("http://localhost:8082/api/enderecocliente")
         .then((response) => {
             setLista(response.data)
         })
@@ -33,31 +33,31 @@ export default function ListEnderecoCliente () {
 
     async function remover() {
 
-        await axios.delete(ENDERECO_API + 'api/endereco/' + idRemover)
+        await axios.delete("http://localhost:8082/api/enderecocliente/" + idRemover)
         .then((response) => {
     
             setOpenModal(false)
-            console.log('Endereço do cliente removido com sucesso.')
+            console.log('Endereço de cliente removida com sucesso.')
     
-            axios.get(ENDERECO_API + "api/endereco")
+            axios.get("http://localhost:8082/api/enderecocliente")
             .then((response) => {
                 setLista(response.data)
             })
         })
         .catch((error) => {
             setOpenModal(false)
-            console.log('Erro ao remover o endereço do cliente.')
+            console.log('Erro ao remover um endereço de cliente.')
         })
     };
 
     return(
         <div>
-
+            <MenuSistema/>
             <div style={{marginTop: '3%'}}>
 
                 <Container textAlign='justified' >
 
-                    <h2> Endereço do Cliente </h2>
+                    <h2> Enderço de cliente</h2>
 
                     <Divider />
 
@@ -71,6 +71,7 @@ export default function ListEnderecoCliente () {
                             floated='right'
                             as={Link} 
                             to='/form-endereco-cliente'
+                           
                         />
 
                         <br/><br/><br/>
@@ -79,47 +80,47 @@ export default function ListEnderecoCliente () {
 
                             <Table.Header>
                                 <Table.Row>
-                                    <Table.HeaderCell>Rua</Table.HeaderCell>
-                                    <Table.HeaderCell>Número</Table.HeaderCell>
-                                    <Table.HeaderCell>Bairro</Table.HeaderCell>
-                                    <Table.HeaderCell>CEP</Table.HeaderCell>
-                                    <Table.HeaderCell>Cidade</Table.HeaderCell>
-                                    <Table.HeaderCell>Estado</Table.HeaderCell>
-                                    <Table.HeaderCell>Complemento</Table.HeaderCell>
+                                <Table.HeaderCell>Rua</Table.HeaderCell>
+                                <Table.HeaderCell>Número</Table.HeaderCell>
+                                <Table.HeaderCell>Bairro</Table.HeaderCell>
+                                <Table.HeaderCell>CEP</Table.HeaderCell>
+                                <Table.HeaderCell>Cidade</Table.HeaderCell>
+                                <Table.HeaderCell>Estado</Table.HeaderCell>
+                                <Table.HeaderCell>Complemento</Table.HeaderCell>
                                     <Table.HeaderCell textAlign='center' width={2}>Ações</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
                         
                             <Table.Body>
 
-                                { lista !== undefined && lista.map(cp => (
+                                { lista !== undefined && lista.map(ed => (
 
-                                    <Table.Row key={cp.id}>
-                                        <Table.Cell>{cp.rua}</Table.Cell>
-                                        <Table.Cell>{cp.numero}</Table.Cell>
-                                        <Table.Cell>{cp.bairro}</Table.Cell>
-                                        <Table.Cell>{cp.cep}</Table.Cell>
-                                        <Table.Cell>{cp.cidade}</Table.Cell>
-                                        <Table.Cell>{cp.estado}</Table.Cell>
-                                        <Table.Cell>{cp.complemento}</Table.Cell>
+                                    <Table.Row key={ed.id}>
+                                        <Table.Cell>{ed.rua}</Table.Cell>
+                                        <Table.Cell>{ed.numero}</Table.Cell>
+                                        <Table.Cell>{ed.bairro}</Table.Cell>
+                                        <Table.Cell>{ed.cep}</Table.Cell>
+                                        <Table.Cell>{ed.cidade}</Table.Cell>
+                                        <Table.Cell>{ed.estado}</Table.Cell>
+                                        <Table.Cell>{ed.complemento}</Table.Cell>
                                         <Table.Cell textAlign='center'>
                                             
                                             <Button
                                                 inverted
                                                 circular
                                                 color='green'
-                                                title='Clique aqui para editar os dados deste endereço'
+                                                title='Clique aqui para editar os dados deste endereço de cliente'
                                                 icon> 
-                                                    <Link to="/form-endereco-cliente" state={{id: cp.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
+                                                    <Link to="/form-endereco-cliente" state={{id: ed.id}} style={{color: 'green'}}> <Icon name='edit' /> </Link>
                                             </Button> &nbsp;
 
                                             <Button
                                                 inverted
                                                 circular
                                                 color='red'
-                                                title='Clique aqui para remover este endereço'
+                                                title='Clique aqui para remover este endereço de cliente'
                                                 icon
-                                                onClick={e => confirmaRemover(cp.id)}> 
+                                                onClick={e => confirmaRemover(ed.id)}> 
                                                     <Icon name='trash' />
                                             </Button>
 
